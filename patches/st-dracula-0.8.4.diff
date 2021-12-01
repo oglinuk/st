@@ -1,0 +1,102 @@
+From 252b37401c486c32de7b9e31261f69a36cb4d6bd Mon Sep 17 00:00:00 2001
+From: oglinuk <daniel-l-black@protonmail.com>
+Date: Wed, 1 Dec 2021 09:16:28 -0800
+Subject: [PATCH] Apply patch `st-dracula-0.8.2.diff`
+
+The `st-dracula-0.8.2.diff` conflicted with the `st-alpha-0.8.2.diff`
+patch when trying to `git apply`, so this is a diff that resolves that
+conflict.
+
+The error recieved when trying to apply the original patch:
+
+```
+error: patch failed: config.def.h:84
+error: config.def.h: patch does not apply
+```
+---
+ config.def.h | 60 ++++++++++++++++++++++++++++------------------------
+ 1 file changed, 32 insertions(+), 28 deletions(-)
+
+diff --git a/config.def.h b/config.def.h
+index b4fff92..f81f61b 100644
+--- a/config.def.h
++++ b/config.def.h
+@@ -99,43 +99,47 @@ float alpha = 0.8;
+ /* Terminal colors (16 first used in escape sequence) */
+ static const char *colorname[] = {
+ 	/* 8 normal colors */
+-	"black",
+-	"red3",
+-	"green3",
+-	"yellow3",
+-	"blue2",
+-	"magenta3",
+-	"cyan3",
+-	"gray90",
++	[0] = "#000000", /* black   */
++	[1] = "#ff5555", /* red     */
++	[2] = "#50fa7b", /* green   */
++	[3] = "#f1fa8c", /* yellow  */
++	[4] = "#bd93f9", /* blue    */
++	[5] = "#ff79c6", /* magenta */
++	[6] = "#8be9fd", /* cyan    */
++	[7] = "#bbbbbb", /* white   */
+ 
+ 	/* 8 bright colors */
+-	"gray50",
+-	"red",
+-	"green",
+-	"yellow",
+-	"#5c5cff",
+-	"magenta",
+-	"cyan",
+-	"white",
+-
+-	[255] = 0,
+-
+-	/* more colors can be added after 255 to use with DefaultXX */
+-	"#cccccc",
+-	"#555555",
+-	"black",
++	[8]  = "#44475a", /* black   */
++	[9]  = "#ff5555", /* red     */
++	[10] = "#50fa7b", /* green   */
++	[11] = "#f1fa8c", /* yellow  */
++	[12] = "#bd93f9", /* blue    */
++	[13] = "#ff79c6", /* magenta */
++	[14] = "#8be9fd", /* cyan    */
++	[15] = "#ffffff", /* white   */
++
++	/* special colors */
++	[256] = "#101010",//"#282a36", /* background */
++	[257] = "#f8f8f2", /* foreground */
+ };
+ 
+-
+ /*
+  * Default colors (colorname index)
+- * foreground, background, cursor, reverse cursor
++ * foreground, background, cursor
+  */
+-unsigned int defaultfg = 7;
+-unsigned int defaultbg = 258;
+-static unsigned int defaultcs = 256;
++unsigned int defaultfg = 257;
++unsigned int defaultbg = 256;
++static unsigned int defaultcs = 257;
+ static unsigned int defaultrcs = 257;
+ 
++/*
++ * Colors used, when the specific fg == defaultfg. So in reverse mode this
++ * will reverse too. Another logic would only make the simple feature too
++ * complex.
++ */
++unsigned int defaultitalic = 7;
++unsigned int defaultunderline = 7;
++
+ /*
+  * Default shape of cursor
+  * 2: Block ("█")
+-- 
+2.25.1
+
